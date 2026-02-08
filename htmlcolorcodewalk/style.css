@@ -112,6 +112,26 @@ body {
     object-fit: cover;
 }
 
+/* Gallery color label overlay */
+.gallery-color-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 8px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.gallery-item:hover .gallery-color-label {
+    opacity: 1;
+}
+
 /* Admin delete button */
 .gallery-item .delete-btn {
     position: absolute;
@@ -333,6 +353,7 @@ body {
         border: none;
         font-family: 'Arial Narrow', Arial, sans-serif;
         font-size: 14px;
+        color: #000;
         cursor: pointer;
         padding: 8px;
         white-space: nowrap;
@@ -393,6 +414,11 @@ body {
 
     .color-list-overlay-content::-webkit-scrollbar {
         display: none;
+    }
+
+    /* Gallery color label: show on tap (mobile) */
+    .gallery-color-label.visible {
+        opacity: 1;
     }
 
     /* Color picker modal mobile */

@@ -6,74 +6,186 @@
 
 body {
     font-family: 'Arial Narrow', Arial, sans-serif;
-    background: #fff;
-    color: #000;
+    background: #9c9c9c;
+    color: rgba(255, 255, 255, 0.55);
     min-height: 100vh;
+    overflow: hidden;
+}
+
+.hub-layout {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
+    padding: 30px;
+    position: relative;
 }
 
-.hub {
-    padding: 40px;
-    max-width: 480px;
-    width: 100%;
+/* Left: Category navigation */
+.hub-nav {
+    flex-shrink: 0;
+    width: 280px;
+    padding-top: 10px;
 }
 
-.hub-header {
-    margin-bottom: 48px;
-}
-
-.hub-header h1 {
-    font-size: 16px;
-    font-weight: normal;
-    margin-bottom: 4px;
-}
-
-.hub-header .email {
-    font-size: 14px;
-    color: rgba(0, 0, 0, 0.4);
-}
-
-.hub-projects {
-    margin-bottom: 48px;
-}
-
-.hub-projects h2 {
-    font-size: 14px;
-    font-weight: normal;
-    color: rgba(0, 0, 0, 0.4);
-    margin-bottom: 12px;
-}
-
-.hub-projects ul {
+.category-list {
     list-style: none;
 }
 
-.hub-projects li {
-    margin-bottom: 8px;
+.cat-main {
+    font-size: 15px;
+    font-weight: normal;
+    margin-top: 2px;
+    cursor: default;
+    line-height: 1.6;
 }
 
-.hub-projects a {
-    font-size: 16px;
-    color: #000;
-    text-decoration: none;
-    border-bottom: 1px solid #000;
-    padding-bottom: 1px;
-    transition: opacity 0.2s;
+.cat-sub {
+    font-size: 15px;
+    font-weight: normal;
+    padding-left: 30px;
+    cursor: pointer;
+    line-height: 1.6;
+    transition: color 0.2s;
 }
 
-.hub-projects a:hover {
-    opacity: 0.5;
+.cat-sub:hover {
+    color: rgba(255, 255, 255, 0.85);
 }
 
-.hub-footer {
-    color: rgba(0, 0, 0, 0.25);
-    font-size: 13px;
+.cat-sub.active {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
-@media (max-width: 480px) {
-    .hub {
-        padding: 30px 20px;
+/* Right: Content area */
+.hub-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-left: 40px;
+    padding-top: 10px;
+}
+
+.hub-name {
+    font-size: 48px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1;
+    margin-bottom: 30px;
+}
+
+.hub-link-area {
+    margin-top: 120px;
+}
+
+.project-link {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+}
+
+.project-link:hover {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.coming-soon {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.35);
+    font-style: italic;
+}
+
+/* Bottom left: INFO */
+.hub-info {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+}
+
+.info-btn {
+    background: none;
+    border: none;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    padding: 0;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+.info-btn:hover {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.info-detail {
+    margin-top: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.info-detail.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.info-detail p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.info-detail a {
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.info-detail a:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ============================================================
+   Mobile Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+    body {
+        overflow: auto;
+    }
+
+    .hub-layout {
+        flex-direction: column;
+        padding: 24px;
+    }
+
+    .hub-nav {
+        width: 100%;
+        order: 2;
+        margin-top: 30px;
+    }
+
+    .hub-content {
+        padding-left: 0;
+        order: 1;
+    }
+
+    .hub-name {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .hub-link-area {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .hub-info {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        order: 3;
+        margin-top: 40px;
     }
 }

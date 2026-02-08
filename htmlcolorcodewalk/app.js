@@ -211,14 +211,26 @@ function renderGallery() {
     }
 
     gallery.innerHTML = filteredData.map(item => `
-        <div class="gallery-item">
+        <div class="gallery-item" onclick="toggleColorLabel(this)">
             ${item.type === 'video'
                 ? `<video src="${item.image}" autoplay loop muted playsinline preload="auto"></video>`
                 : `<img src="${item.image}" alt="${item.color.name}" loading="lazy">`
             }
-            ${isAdminAuthenticated ? `<button class="delete-btn" onclick="deleteFromGallery('${item.id}')">&times;</button>` : ''}
+            <div class="gallery-color-label">${item.color.name}</div>
+            ${isAdminAuthenticated ? `<button class="delete-btn" onclick="event.stopPropagation(); deleteFromGallery('${item.id}')">&times;</button>` : ''}
         </div>
     `).join('');
+}
+
+// Toggle color label on mobile tap
+function toggleColorLabel(el) {
+    const label = el.querySelector('.gallery-color-label');
+    if (!label) return;
+    // Hide all other visible labels first
+    document.querySelectorAll('.gallery-color-label.visible').forEach(l => {
+        if (l !== label) l.classList.remove('visible');
+    });
+    label.classList.toggle('visible');
 }
 
 async function addToGallery(imageDataUrl, colorName, fileType) {
