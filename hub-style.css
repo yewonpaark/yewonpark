@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    background: #fff;
+    color: #000;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hub {
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+}
+
+.hub-header {
+    margin-bottom: 48px;
+}
+
+.hub-header h1 {
+    font-size: 16px;
+    font-weight: normal;
+    margin-bottom: 4px;
+}
+
+.hub-header .email {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.hub-projects {
+    margin-bottom: 48px;
+}
+
+.hub-projects h2 {
+    font-size: 14px;
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.4);
+    margin-bottom: 12px;
+}
+
+.hub-projects ul {
+    list-style: none;
+}
+
+.hub-projects li {
+    margin-bottom: 8px;
+}
+
+.hub-projects a {
+    font-size: 16px;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1px;
+    transition: opacity 0.2s;
+}
+
+.hub-projects a:hover {
+    opacity: 0.5;
+}
+
+.hub-footer {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 13px;
+}
+
+@media (max-width: 480px) {
+    .hub {
+        padding: 30px 20px;
+    }
+}

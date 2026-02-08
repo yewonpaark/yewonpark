@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>html color code walk</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Mobile header bar (hidden on desktop) -->
+        <div class="mobile-header" id="mobileHeader">
+            <span class="mobile-title">html <span class="italic">color</span> code walk</span>
+            <button class="mobile-upload-btn" id="mobileUploadBtn" aria-label="Upload image">&lt;/&gt;</button>
+            <button class="mobile-list-toggle" id="mobileListToggle">list &#9660;</button>
+        </div>
+
+        <!-- Left side - Color list (desktop) -->
+        <div class="text-section" id="textSection">
+            <h1 class="title">html <span class="italic">color</span> code walk</h1>
+            <ul class="color-list" id="colorList"></ul>
+        </div>
+
+        <!-- Right side - Gallery -->
+        <div class="gallery-section">
+            <div class="gallery" id="gallery"></div>
+        </div>
+    </div>
+
+    <!-- Mobile color list overlay -->
+    <div class="color-list-overlay" id="colorListOverlay">
+        <div class="color-list-overlay-backdrop" id="overlayBackdrop"></div>
+        <div class="color-list-overlay-content" id="overlayContent"></div>
+    </div>
+
+    <!-- Bouncing logo button (desktop) -->
+    <div id="bouncingLogo" class="bouncing-logo" role="button" aria-label="Upload image">
+        <span>&lt;/&gt;</span>
+    </div>
+    <input type="file" id="imageUpload" accept="image/*" style="display:none">
+
+    <!-- Color Picker Modal -->
+    <div id="colorPickerModal" class="color-picker-modal">
+        <div class="color-picker-content">
+            <div class="color-picker-header">
+                <p>Click on the image to pick the main color</p>
+                <button id="closePickerBtn" class="close-picker-btn">&times;</button>
+            </div>
+            <div class="color-picker-image-wrap">
+                <canvas id="colorPickerCanvas"></canvas>
+            </div>
+            <div class="color-picker-preview" id="colorPreview">
+                <div class="preview-swatch" id="previewSwatch"></div>
+                <span id="previewColorName">-</span>
+                <button id="confirmColorBtn" class="confirm-color-btn" disabled>Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (compat) — Firestore + Auth only, images via Cloudinary -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
