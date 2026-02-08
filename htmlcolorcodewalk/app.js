@@ -212,13 +212,16 @@ function renderGallery() {
 
     gallery.innerHTML = filteredData.map(item => `
         <div class="gallery-item">
-            <img src="${item.image}" alt="${item.color.name}">
+            ${item.type === 'video'
+                ? `<video src="${item.image}" autoplay loop muted playsinline></video>`
+                : `<img src="${item.image}" alt="${item.color.name}">`
+            }
             ${isAdminAuthenticated ? `<button class="delete-btn" onclick="deleteFromGallery('${item.id}')">&times;</button>` : ''}
         </div>
     `).join('');
 }
 
-async function addToGallery(imageDataUrl, colorName) {
+async function addToGallery(imageDataUrl, colorName, fileType) {
     const color = htmlColors.find(c => c.name === colorName);
     const id = Date.now().toString();
 
@@ -233,8 +236,9 @@ async function addToGallery(imageDataUrl, colorName) {
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
         formData.append('folder', 'colorwalk');
 
+        const endpoint = fileType === 'video' ? 'video' : 'image';
         const uploadRes = await fetch(
-            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${endpoint}/upload`,
             { method: 'POST', body: formData }
         );
         const uploadData = await uploadRes.json();
@@ -243,6 +247,7 @@ async function addToGallery(imageDataUrl, colorName) {
         await db.collection('gallery').doc(id).set({
             image: uploadData.secure_url,
             cloudinaryId: uploadData.public_id,
+            type: fileType || 'image',
             color: { name: color.name, hex: color.hex, rgb: color.rgb },
             date: new Date().toLocaleDateString('en-US'),
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -254,16 +259,50 @@ async function addToGallery(imageDataUrl, colorName) {
     }
 }
 
+// Upload video file directly (no resize)
+async function addToGalleryFromFile(file, colorName, fileType) {
+    const color = htmlColors.find(c => c.name === colorName);
+    const id = Date.now().toString();
+
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('folder', 'colorwalk');
+
+        const uploadRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
+            { method: 'POST', body: formData }
+        );
+        const uploadData = await uploadRes.json();
+
+        await db.collection('gallery').doc(id).set({
+            image: uploadData.secure_url,
+            cloudinaryId: uploadData.public_id,
+            type: fileType || 'video',
+            color: { name: color.name, hex: color.hex, rgb: color.rgb },
+            date: new Date().toLocaleDateString('en-US'),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    } catch (err) {
+        console.error('Upload failed:', err);
+        alert('Upload failed. Please try again.');
+    }
+}
+
 // ============================================================
 // 4. BACKGROUND COLOR
 // ============================================================
 function updateBackgroundColor() {
+    const logoText = document.querySelector('#bouncingLogo span');
     if (selectedColors.length === 0) {
         document.body.style.backgroundColor = '#FFFFFF';
+        if (logoText) logoText.style.color = '#fff';
     } else {
         const lastColorName = selectedColors[selectedColors.length - 1];
         const lastColor = htmlColors.find(c => c.name === lastColorName);
         document.body.style.backgroundColor = lastColor.hex;
+        if (logoText) logoText.style.color = lastColor.hex;
     }
 }
 
@@ -375,15 +414,50 @@ async function deleteFromGallery(docId) {
 // ============================================================
 // 7. FILE UPLOAD HANDLER
 // ============================================================
+let pendingFileType = 'image'; // 'image' or 'video'
+let pendingVideoFile = null;
+
 function handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        openColorPickerModal(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+        alert('File too large (max 10MB)');
+        event.target.value = '';
+        return;
+    }
+
+    if (file.type.startsWith('video/')) {
+        // Video: extract first frame for color picker
+        pendingFileType = 'video';
+        pendingVideoFile = file;
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.muted = true;
+        video.onloadeddata = function () {
+            video.currentTime = 0;
+        };
+        video.onseeked = function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const frameDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            openColorPickerModal(frameDataUrl);
+            URL.revokeObjectURL(video.src);
+        };
+        video.src = URL.createObjectURL(file);
+    } else {
+        // Image: existing flow
+        pendingFileType = 'image';
+        pendingVideoFile = null;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            openColorPickerModal(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
     event.target.value = '';
 }
 
@@ -460,10 +534,17 @@ document.getElementById('confirmColorBtn').addEventListener('click', function ()
 
     const nearest = findNearestColor(pickedColor.r, pickedColor.g, pickedColor.b);
 
-    resizeImage(pendingImageDataUrl, 800, function (resizedDataUrl) {
-        addToGallery(resizedDataUrl, nearest.name);
+    if (pendingFileType === 'video' && pendingVideoFile) {
+        // Video: upload original file directly to Cloudinary
+        addToGalleryFromFile(pendingVideoFile, nearest.name, 'video');
         closeColorPickerModal();
-    });
+    } else {
+        // Image: resize then upload
+        resizeImage(pendingImageDataUrl, 800, function (resizedDataUrl) {
+            addToGallery(resizedDataUrl, nearest.name, 'image');
+            closeColorPickerModal();
+        });
+    }
 });
 
 // Close button
