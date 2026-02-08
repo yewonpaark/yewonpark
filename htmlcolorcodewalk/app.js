@@ -213,8 +213,8 @@ function renderGallery() {
     gallery.innerHTML = filteredData.map(item => `
         <div class="gallery-item">
             ${item.type === 'video'
-                ? `<video src="${item.image}" autoplay loop muted playsinline></video>`
-                : `<img src="${item.image}" alt="${item.color.name}">`
+                ? `<video src="${item.image}" autoplay loop muted playsinline preload="auto"></video>`
+                : `<img src="${item.image}" alt="${item.color.name}" loading="lazy">`
             }
             ${isAdminAuthenticated ? `<button class="delete-btn" onclick="deleteFromGallery('${item.id}')">&times;</button>` : ''}
         </div>
@@ -243,9 +243,12 @@ async function addToGallery(imageDataUrl, colorName, fileType) {
         );
         const uploadData = await uploadRes.json();
 
-        // 3. Save metadata to Firestore
+        // 3. Optimize URL with Cloudinary transformations
+        const optimizedUrl = uploadData.secure_url.replace('/upload/', '/upload/w_400,f_auto,q_auto/');
+
+        // 4. Save metadata to Firestore
         await db.collection('gallery').doc(id).set({
-            image: uploadData.secure_url,
+            image: optimizedUrl,
             cloudinaryId: uploadData.public_id,
             type: fileType || 'image',
             color: { name: color.name, hex: color.hex, rgb: color.rgb },
@@ -276,8 +279,11 @@ async function addToGalleryFromFile(file, colorName, fileType) {
         );
         const uploadData = await uploadRes.json();
 
+        // Optimize URL with Cloudinary transformations for video
+        const optimizedUrl = uploadData.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
+
         await db.collection('gallery').doc(id).set({
-            image: uploadData.secure_url,
+            image: optimizedUrl,
             cloudinaryId: uploadData.public_id,
             type: fileType || 'video',
             color: { name: color.name, hex: color.hex, rgb: color.rgb },
