@@ -313,14 +313,17 @@ async function addToGalleryFromFile(file, colorName, fileType) {
 // ============================================================
 function updateBackgroundColor() {
     const logoText = document.querySelector('#bouncingLogo span');
+    const mobileHeader = document.querySelector('.mobile-header');
     if (selectedColors.length === 0) {
         document.body.style.backgroundColor = '#FFFFFF';
         if (logoText) logoText.style.color = '#fff';
+        if (mobileHeader) mobileHeader.style.backgroundColor = '#FFFFFF';
     } else {
         const lastColorName = selectedColors[selectedColors.length - 1];
         const lastColor = htmlColors.find(c => c.name === lastColorName);
         document.body.style.backgroundColor = lastColor.hex;
         if (logoText) logoText.style.color = lastColor.hex;
+        if (mobileHeader) mobileHeader.style.backgroundColor = lastColor.hex;
     }
 }
 
