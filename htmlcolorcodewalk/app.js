@@ -516,19 +516,60 @@ function handleFileSelect(event) {
         const video = document.createElement('video');
         video.preload = 'auto';
         video.muted = true;
-        video.onloadeddata = function () {
-            video.currentTime = 0;
-        };
-        video.onseeked = function () {
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+
+        let frameCaptured = false;
+        function captureFrame() {
+            if (frameCaptured) return;
+            frameCaptured = true;
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             const frameDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            video.pause();
             openColorPickerModal(frameDataUrl);
             URL.revokeObjectURL(video.src);
+        }
+
+        video.onseeked = captureFrame;
+
+        video.onloadeddata = function () {
+            // Try seeking to 0.1s (not 0, since seeking to 0 may not fire onseeked)
+            if (video.duration > 0.1) {
+                video.currentTime = 0.1;
+            } else {
+                video.currentTime = 0.01;
+            }
+            // Fallback: if onseeked doesn't fire within 1s, capture anyway
+            setTimeout(function () {
+                if (!frameCaptured && video.readyState >= 2) {
+                    captureFrame();
+                }
+            }, 1000);
         };
+
+        // Additional fallback for mobile: try play then pause to load frame
+        video.oncanplay = function () {
+            if (!frameCaptured && video.currentTime === 0) {
+                video.play().then(function () {
+                    setTimeout(function () {
+                        video.pause();
+                        if (video.duration > 0.1) {
+                            video.currentTime = 0.1;
+                        } else {
+                            captureFrame();
+                        }
+                    }, 100);
+                }).catch(function () {
+                    // Autoplay blocked — onloadeddata fallback will handle it
+                });
+            }
+        };
+
         video.src = URL.createObjectURL(file);
+        video.load();
     } else {
         // Image: existing flow
         pendingFileType = 'image';
