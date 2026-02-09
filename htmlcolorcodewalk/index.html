@@ -54,10 +54,24 @@
                 <input type="text" id="inputUploader" placeholder="Uploader Name" maxlength="50">
             </div>
             <div class="color-picker-preview" id="colorPreview">
-                <div class="preview-swatch" id="previewSwatch"></div>
+                <div class="preview-swatches">
+                    <div class="preview-swatch" id="previewSwatchActual" title="Picked color"></div>
+                    <span class="preview-label">OG</span>
+                    <span class="preview-match" id="previewMatch"></span>
+                    <div class="preview-swatch" id="previewSwatchNearest" title="Nearest HTML color"></div>
+                </div>
                 <span id="previewColorName">-</span>
                 <button id="confirmColorBtn" class="confirm-color-btn" disabled>Upload</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Image Popup Modal (full-resolution) -->
+    <div id="imagePopupModal" class="image-popup-modal" onclick="closeImagePopup()">
+        <div class="image-popup-content" onclick="event.stopPropagation()">
+            <button class="image-popup-close" onclick="closeImagePopup()">&times;</button>
+            <img id="imagePopupImg" src="" alt="">
+            <video id="imagePopupVideo" src="" autoplay loop muted playsinline style="display:none"></video>
         </div>
     </div>
 

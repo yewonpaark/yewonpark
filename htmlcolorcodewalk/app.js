@@ -224,26 +224,64 @@ function renderGallery() {
             ? `<button class="delete-btn" onclick="event.stopPropagation(); deleteFromGallery('${item.id}')">&times;</button>`
             : '';
         const escapedName = item.color.name.replace(/'/g, "\\'");
+        const escapedUrl = item.image.replace(/'/g, "\\'");
+        const itemType = item.type || 'image';
         return `
         <div class="gallery-item" onclick="handleGalleryItemClick(this, '${escapedName}')">
             ${media}
             <div class="gallery-color-label">${labelText}${adminInfo}</div>
+            <button class="gallery-expand-btn" onclick="event.stopPropagation(); openImagePopup('${escapedUrl}', '${itemType}')">+</button>
             ${deleteBtn}
         </div>`;
     }).join('');
 }
 
-// Gallery item click: mobile = tap1 label, tap2 filter; desktop = filter directly
-function handleGalleryItemClick(el, colorName) {
-    const label = el.querySelector('.gallery-color-label');
+// Image popup: show full-resolution image on "+" button click
+function openImagePopup(optimizedUrl, type) {
+    const modal = document.getElementById('imagePopupModal');
+    const img = document.getElementById('imagePopupImg');
+    const video = document.getElementById('imagePopupVideo');
+    // Remove Cloudinary transformations to get original URL
+    const originalUrl = optimizedUrl.replace(/\/upload\/[^\/]+\//, '/upload/');
+    if (type === 'video') {
+        img.style.display = 'none';
+        video.style.display = 'block';
+        video.src = originalUrl;
+    } else {
+        video.style.display = 'none';
+        img.style.display = 'block';
+        img.src = originalUrl;
+    }
+    modal.classList.add('active');
+}
 
-    // Mobile: first tap shows label, second tap filters
+function closeImagePopup() {
+    const modal = document.getElementById('imagePopupModal');
+    const video = document.getElementById('imagePopupVideo');
+    modal.classList.remove('active');
+    video.src = '';
+    document.getElementById('imagePopupImg').src = '';
+}
+
+// Gallery item click: mobile = tap1 shows expand btn, tap2 filter; desktop = filter directly
+function handleGalleryItemClick(el, colorName) {
+    const expandBtn = el.querySelector('.gallery-expand-btn');
+
+    // Mobile: first tap shows "+" button, second tap filters
     if (window.innerWidth <= 768) {
-        if (label && !label.classList.contains('visible')) {
+        if (expandBtn && !expandBtn.classList.contains('visible')) {
+            // Hide all other visible expand buttons first
+            document.querySelectorAll('.gallery-expand-btn.visible').forEach(b => b.classList.remove('visible'));
             document.querySelectorAll('.gallery-color-label.visible').forEach(l => l.classList.remove('visible'));
-            label.classList.add('visible');
+            expandBtn.classList.add('visible');
+            // Also show label
+            const label = el.querySelector('.gallery-color-label');
+            if (label) label.classList.add('visible');
             return;
         }
+        // Second tap: hide button/label and filter
+        if (expandBtn) expandBtn.classList.remove('visible');
+        const label = el.querySelector('.gallery-color-label');
         if (label) label.classList.remove('visible');
     }
 
@@ -535,7 +573,9 @@ function openColorPickerModal(imageDataUrl) {
     };
     img.src = imageDataUrl;
 
-    document.getElementById('previewSwatch').style.background = '#fff';
+    document.getElementById('previewSwatchActual').style.background = '#fff';
+    document.getElementById('previewSwatchNearest').style.background = '#fff';
+    document.getElementById('previewMatch').textContent = '';
     document.getElementById('previewColorName').textContent = '-';
     document.getElementById('confirmColorBtn').disabled = true;
     document.getElementById('inputMainObject').value = '';
@@ -566,10 +606,13 @@ document.getElementById('colorPickerCanvas').addEventListener('click', function 
 
     pickedColor = { r, g, b };
     const nearest = findNearestColor(r, g, b);
+    const nearestParts = nearest.rgb.split(',').map(s => parseInt(s.trim(), 10));
+    const match = colorSimilarity(r, g, b, nearestParts[0], nearestParts[1], nearestParts[2]);
 
-    document.getElementById('previewSwatch').style.background = `rgb(${r}, ${g}, ${b})`;
-    document.getElementById('previewColorName').textContent =
-        `${nearest.name} (rgb: ${r}, ${g}, ${b})`;
+    document.getElementById('previewSwatchActual').style.background = `rgb(${r}, ${g}, ${b})`;
+    document.getElementById('previewSwatchNearest').style.background = nearest.hex;
+    document.getElementById('previewMatch').textContent = `${match}%`;
+    document.getElementById('previewColorName').textContent = nearest.name;
     document.getElementById('confirmColorBtn').disabled = false;
 });
 
@@ -627,6 +670,13 @@ function findNearestColor(r, g, b) {
     }
 
     return nearest;
+}
+
+// Color similarity: 0–100% based on Euclidean distance in RGB space
+function colorSimilarity(r1, g1, b1, r2, g2, b2) {
+    const maxDist = Math.sqrt(255 * 255 * 3); // max possible distance
+    const dist = Math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2);
+    return Math.round((1 - dist / maxDist) * 100);
 }
 
 // ============================================================
@@ -749,3 +799,18 @@ if (isAdminParam) {
 }
 
 renderColorList();
+
+// Title click → reset to home (clear all selected colors)
+function resetToHome() {
+    selectedColors = [];
+    document.querySelectorAll('.color-item.selected').forEach(el => {
+        el.classList.remove('selected');
+        el.querySelector('.color-name').style.color = '#000';
+        el.querySelector('.hex-code').style.color = 'rgba(0, 0, 0, 0.25)';
+        el.querySelector('.rgb-value').style.color = 'rgba(0, 0, 0, 0.25)';
+    });
+    updateBackgroundColor();
+    renderGallery();
+}
+document.querySelector('.title').addEventListener('click', resetToHome);
+document.querySelector('.mobile-title').addEventListener('click', resetToHome);
