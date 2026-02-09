@@ -284,6 +284,36 @@ body {
     cursor: not-allowed;
 }
 
+/* Color picker input fields */
+.color-picker-inputs {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.color-picker-inputs input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    color: #000;
+}
+
+.color-picker-inputs input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* Gallery uploader label (admin only) */
+.gallery-uploader {
+    font-size: 10px;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
 /* ============================================================
    Mobile Responsive (≤768px)
    ============================================================ */

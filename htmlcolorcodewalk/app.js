@@ -210,30 +210,48 @@ function renderGallery() {
         return;
     }
 
-    gallery.innerHTML = filteredData.map(item => `
-        <div class="gallery-item" onclick="toggleColorLabel(this)">
-            ${item.type === 'video'
-                ? `<video src="${item.image}" autoplay loop muted playsinline preload="auto"></video>`
-                : `<img src="${item.image}" alt="${item.color.name}" loading="lazy">`
-            }
-            <div class="gallery-color-label">${item.color.name}</div>
-            ${isAdminAuthenticated ? `<button class="delete-btn" onclick="event.stopPropagation(); deleteFromGallery('${item.id}')">&times;</button>` : ''}
-        </div>
-    `).join('');
+    gallery.innerHTML = filteredData.map(item => {
+        const media = item.type === 'video'
+            ? `<video src="${item.image}" autoplay loop muted playsinline preload="auto"></video>`
+            : `<img src="${item.image}" alt="${item.color.name}" loading="lazy">`;
+        const labelText = item.mainObject
+            ? `${item.color.name}, ${item.mainObject}`
+            : item.color.name;
+        const adminInfo = (isAdminAuthenticated && item.uploader)
+            ? `<div class="gallery-uploader">${item.uploader}</div>`
+            : '';
+        const deleteBtn = isAdminAuthenticated
+            ? `<button class="delete-btn" onclick="event.stopPropagation(); deleteFromGallery('${item.id}')">&times;</button>`
+            : '';
+        const escapedName = item.color.name.replace(/'/g, "\\'");
+        return `
+        <div class="gallery-item" onclick="handleGalleryItemClick(this, '${escapedName}')">
+            ${media}
+            <div class="gallery-color-label">${labelText}${adminInfo}</div>
+            ${deleteBtn}
+        </div>`;
+    }).join('');
 }
 
-// Toggle color label on mobile tap
-function toggleColorLabel(el) {
+// Gallery item click: mobile = tap1 label, tap2 filter; desktop = filter directly
+function handleGalleryItemClick(el, colorName) {
     const label = el.querySelector('.gallery-color-label');
-    if (!label) return;
-    // Hide all other visible labels first
-    document.querySelectorAll('.gallery-color-label.visible').forEach(l => {
-        if (l !== label) l.classList.remove('visible');
-    });
-    label.classList.toggle('visible');
+
+    // Mobile: first tap shows label, second tap filters
+    if (window.innerWidth <= 768) {
+        if (label && !label.classList.contains('visible')) {
+            document.querySelectorAll('.gallery-color-label.visible').forEach(l => l.classList.remove('visible'));
+            label.classList.add('visible');
+            return;
+        }
+        if (label) label.classList.remove('visible');
+    }
+
+    // Toggle color filter
+    toggleColor(colorName);
 }
 
-async function addToGallery(imageDataUrl, colorName, fileType) {
+async function addToGallery(imageDataUrl, colorName, fileType, mainObject, uploader) {
     const color = htmlColors.find(c => c.name === colorName);
     const id = Date.now().toString();
 
@@ -264,6 +282,8 @@ async function addToGallery(imageDataUrl, colorName, fileType) {
             cloudinaryId: uploadData.public_id,
             type: fileType || 'image',
             color: { name: color.name, hex: color.hex, rgb: color.rgb },
+            mainObject: mainObject || '',
+            uploader: uploader || '',
             date: new Date().toLocaleDateString('en-US'),
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -275,7 +295,7 @@ async function addToGallery(imageDataUrl, colorName, fileType) {
 }
 
 // Upload video file directly (no resize)
-async function addToGalleryFromFile(file, colorName, fileType) {
+async function addToGalleryFromFile(file, colorName, fileType, mainObject, uploader) {
     const color = htmlColors.find(c => c.name === colorName);
     const id = Date.now().toString();
 
@@ -299,6 +319,8 @@ async function addToGalleryFromFile(file, colorName, fileType) {
             cloudinaryId: uploadData.public_id,
             type: fileType || 'video',
             color: { name: color.name, hex: color.hex, rgb: color.rgb },
+            mainObject: mainObject || '',
+            uploader: uploader || '',
             date: new Date().toLocaleDateString('en-US'),
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -516,6 +538,8 @@ function openColorPickerModal(imageDataUrl) {
     document.getElementById('previewSwatch').style.background = '#fff';
     document.getElementById('previewColorName').textContent = '-';
     document.getElementById('confirmColorBtn').disabled = true;
+    document.getElementById('inputMainObject').value = '';
+    document.getElementById('inputUploader').value = '';
     pickedColor = null;
 }
 
@@ -554,15 +578,17 @@ document.getElementById('confirmColorBtn').addEventListener('click', function ()
     if (!pickedColor || !pendingImageDataUrl) return;
 
     const nearest = findNearestColor(pickedColor.r, pickedColor.g, pickedColor.b);
+    const mainObject = document.getElementById('inputMainObject').value.trim();
+    const uploader = document.getElementById('inputUploader').value.trim();
 
     if (pendingFileType === 'video' && pendingVideoFile) {
         // Video: upload original file directly to Cloudinary
-        addToGalleryFromFile(pendingVideoFile, nearest.name, 'video');
+        addToGalleryFromFile(pendingVideoFile, nearest.name, 'video', mainObject, uploader);
         closeColorPickerModal();
     } else {
         // Image: resize then upload
         resizeImage(pendingImageDataUrl, 800, function (resizedDataUrl) {
-            addToGallery(resizedDataUrl, nearest.name, 'image');
+            addToGallery(resizedDataUrl, nearest.name, 'image', mainObject, uploader);
             closeColorPickerModal();
         });
     }
