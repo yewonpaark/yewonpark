@@ -47,14 +47,14 @@ window.CONTENT = [
   { segment: 'tram8', type: 'sequence', images: ['image15_sv4_westplatz1.jpg', 'image15_sv4_westplatz2.jpg', 'image15_sv4_westplatz3.jpg', 'image15_sv4_westplatz4.jpg'], fullWidth: true, label: "", caption: "Westplatz", position: 0.96 },
 
   // walk2 — 5 min
-  { segment: 'walk2', type: 'double', images: ['image16-1.jpg', 'image16-2.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image17.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image18.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image19.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image20.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image21.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'single', images: ['image22.jpg'], label: "", caption: "" },
-  { segment: 'walk2', type: 'double', images: ['image23-1.jpg', 'image23-2.jpg'], label: "", caption: "" },
+  { segment: 'walk2', type: 'double', images: ['image16-1.jpg', 'image16-2.jpg'], hideLabel: true, caption: "Neues Rathaus" },
+  { segment: 'walk2', type: 'single', images: ['image17.jpg'], hideText: true },
+  { segment: 'walk2', type: 'single', images: ['image18.jpg'], hideText: true },
+  { segment: 'walk2', type: 'single', images: ['image19.jpg'], hideText: true },
+  { segment: 'walk2', type: 'single', images: ['image20.jpg'], hideText: true},
+  { segment: 'walk2', type: 'single', images: ['image21.jpg'], hideText: true },
+  { segment: 'walk2', type: 'single', images: ['image22.jpg'], hideText: true },
+  { segment: 'walk2', type: 'double', images: ['image23-1.jpg', 'image23-2.jpg'], hideText: true },
   { segment: 'walk2', type: 'title', caption: "HGB", position: 1 },
 
   // after — after 00:00
