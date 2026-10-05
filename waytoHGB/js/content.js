@@ -31,20 +31,20 @@ window.CONTENT = [
   { segment: 'tram7', type: 'single', images: ['image8.jpg'], hideLabel: true, hideText: true, position: 0.2 },
 
   // wait — 3 min
-  { segment: 'wait', type: 'double', images: ['image9.jpg', 'image9-1.jpg'], label: "", caption: "transfer time", position: 0.1 },
+  { segment: 'wait', type: 'double', images: ['image9.jpg', 'image9-1.jpg'], label: "", caption: "transfer", position: 0.1 },
 
   // tram8 — 14 min
   { segment: 'tram8', type: 'single', images: ['image10.jpg'], label: "", caption: "Paunsdorf-Nord direction", position: 0.04 },
-  { segment: 'tram8', type: 'single', images: ['image11.jpg'], label: "", caption: "", position: 0.13 },
-  { segment: 'tram8', type: 'single', images: ['image12.jpg'], label: "", caption: "", position: 0.21 },
-  { segment: 'tram8', type: 'single', images: ['image12_sv_angerbrucke.jpg'], fullWidth: true, label: "", caption: "", position: 0.29 },
-  { segment: 'tram8', type: 'single', images: ['image13.jpg'], label: "", caption: "", position: 0.38 },
-  { segment: 'tram8', type: 'sequence', images: ['image13_sv_felsenkeller1.jpg', 'image13_sv_felsenkeller2.jpg', 'image13_sv_felsenkeller3.jpg', 'image13_sv_felsenkeller4.jpg', 'image13_sv_felsenkeller5.jpg'], fullWidth: true, label: "", caption: "", position: 0.46 },
-  { segment: 'tram8', type: 'single', images: ['image14.jpg'], label: "", caption: "", position: 0.54 },
-  { segment: 'tram8', type: 'single', images: ['image15_sv_altestr.jpg'], fullWidth: true, label: "", caption: "", position: 0.71 },
-  { segment: 'tram8', type: 'single', images: ['image15_sv2_nonnenstr.jpg'], fullWidth: true, label: "", caption: "", position: 0.79 },
-  { segment: 'tram8', type: 'single', images: ['image15_sv3_marschnerstr.jpg'], fullWidth: true, label: "", caption: "", position: 0.88 },
-  { segment: 'tram8', type: 'sequence', images: ['image15_sv4_westplatz1.jpg', 'image15_sv4_westplatz2.jpg', 'image15_sv4_westplatz3.jpg', 'image15_sv4_westplatz4.jpg'], fullWidth: true, label: "", caption: "", position: 0.96 },
+  { segment: 'tram8', type: 'single', images: ['image11.jpg'], hideText: true, position: 0.13 },
+  { segment: 'tram8', type: 'single', images: ['image12.jpg'], hideText: true, position: 0.21 },
+  { segment: 'tram8', type: 'single', images: ['image12_sv_angerbrucke.jpg'], fullWidth: true, label: "", caption: "Angerbrücke/Straßenbahnhof", position: 0.29 },
+  { segment: 'tram8', type: 'single', images: ['image13.jpg'], hideText: true, position: 0.38 },
+  { segment: 'tram8', type: 'sequence', images: ['image13_sv_felsenkeller1.jpg', 'image13_sv_felsenkeller2.jpg', 'image13_sv_felsenkeller3.jpg', 'image13_sv_felsenkeller4.jpg', 'image13_sv_felsenkeller5.jpg'], fullWidth: true, label: "", caption: "Felsenkeller", position: 0.46 },
+  { segment: 'tram8', type: 'single', images: ['image14.jpg'], hideText: true, position: 0.54 },
+  { segment: 'tram8', type: 'single', images: ['image15_sv_altestr.jpg'], fullWidth: true, label: "", caption: "Alte Str.", position: 0.71 },
+  { segment: 'tram8', type: 'single', images: ['image15_sv2_nonnenstr.jpg'], fullWidth: true, label: "", caption: "Nonnenstr.", position: 0.79 },
+  { segment: 'tram8', type: 'single', images: ['image15_sv3_marschnerstr.jpg'], fullWidth: true, label: "", caption: "Marschnerstr.", position: 0.88 },
+  { segment: 'tram8', type: 'sequence', images: ['image15_sv4_westplatz1.jpg', 'image15_sv4_westplatz2.jpg', 'image15_sv4_westplatz3.jpg', 'image15_sv4_westplatz4.jpg'], fullWidth: true, label: "", caption: "Westplatz", position: 0.96 },
 
   // walk2 — 5 min
   { segment: 'walk2', type: 'double', images: ['image16-1.jpg', 'image16-2.jpg'], label: "", caption: "" },
