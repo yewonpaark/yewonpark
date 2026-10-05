@@ -1,0 +1,286 @@
+/*
+ * All visuals. Everything adjustable is a variable in :root.
+ * Mobile rules use the .is-mobile class, which js/main.js sets from
+ * CONFIG.MOBILE_BREAKPOINT (so the breakpoint lives in one place).
+ */
+
+@font-face {
+  font-family: "ABC Areal";
+  src: url("../fonts/ABCAreal-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "ABC Areal";
+  src: url("../fonts/ABCAreal-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "ABC Areal";
+  src: url("../fonts/ABCAreal-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  /* Type */
+  --font: "ABC Areal";
+  --font-stack: var(--font), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --label-size: 13px;
+  --label-weight: 400;            /* 500 = ABC Areal Medium */
+  --caption-size: 16px;
+
+  /* Layout */
+  --page-margin: 24px;
+  --content-max: 960px;           /* widest a photo block gets */
+  --double-gap: 12px;             /* between the two images of a double block */
+  --image-ratio: 3 / 2;           /* placeholder ratio until the image has loaded */
+  --media-text-gap: 28px;         /* photo → label */
+  --label-caption-gap: 6px;
+  --block-pad: 40px;              /* minimum air under every block */
+  --after-gap: 160px;             /* between blocks after 00:00 */
+  --placeholder: #dcdcdc;
+  --sequence-duration: 550ms;     /* click-through motion; keep in sync with SEQUENCE_MS in main.js */
+  --sequence-zoom: 1.8;           /* how far the leaving image zooms in */
+  --sequence-step: 100svh;        /* scroll distance (= time) each image of a sequence takes */
+
+  /* Counter */
+  --counter-size: clamp(56px, 9vw, 128px);
+  --counter-top: 16px;
+  --counter-bg: transparent;      /* set to #fff if the digits are hard to read over photos */
+  --lead-height: calc(var(--counter-size) + 56px);   /* empty space above the first block */
+}
+
+.is-mobile {
+  --page-margin: 16px;
+  --media-text-gap: 20px;
+  --lead-height: calc(var(--counter-size) + 40px);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: #fff;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-stack);
+  font-weight: 400;
+  font-size: var(--caption-size);
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Counter ---------- */
+
+.counter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: calc(var(--counter-top) + env(safe-area-inset-top, 0px)) 0 12px;
+  text-align: center;
+  background: var(--counter-bg);
+  pointer-events: none;
+}
+
+.counter__time {
+  font-weight: 700;
+  font-size: var(--counter-size);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------- Track ---------- */
+
+.vh-probe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  height: 100svh;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.track { overflow-anchor: none; }
+
+.segment { position: relative; }
+
+.lead { height: var(--lead-height); }
+
+.spacer { height: 0; }
+
+.after .block { padding-top: var(--after-gap); }
+
+/* ---------- Blocks ---------- */
+
+.block {
+  width: min(100% - 2 * var(--page-margin), var(--content-max));
+  margin: 0 auto;
+  padding-bottom: var(--block-pad);
+}
+
+.block__media {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--double-gap);
+  align-items: start;
+  margin-bottom: var(--media-text-gap);
+}
+
+.block--double .block__media { grid-template-columns: 1fr 1fr; }
+
+.block--bare .block__media { margin-bottom: 0; }
+
+/* fullWidth: true — photo fills the whole screen on desktop (cropped to fit); text stays in the column. Mobile is unchanged. */
+html:not(.is-mobile) .block--full { width: 100%; }
+html:not(.is-mobile) .block--full .frame {
+  aspect-ratio: auto !important;   /* fills exactly one screen, cropped to fit */
+  height: 100vh;
+  height: 100svh;
+}
+html:not(.is-mobile) .block--full .frame img { object-fit: cover; }
+html:not(.is-mobile) .block--full .block__label,
+html:not(.is-mobile) .block--full .block__caption {
+  width: min(100% - 2 * var(--page-margin), var(--content-max));
+  margin-left: auto;
+  margin-right: auto;
+}
+.is-mobile .block--double .block__media { grid-template-columns: 1fr; }
+
+.frame {
+  position: relative;
+  aspect-ratio: var(--image-ratio);
+  background: var(--placeholder);
+  overflow: hidden;
+}
+
+.frame img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.frame.is-loaded { background: none; }
+
+/* type: 'sequence' — images stacked in one pinned frame; one scroll step (or one click) per image */
+.sequence__run { height: calc((var(--sequence-count) - 1) * var(--sequence-step)); }
+.frame--sequence {
+  position: sticky;
+  top: var(--lead-height);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+html:not(.is-mobile) .block--full .frame--sequence { top: 0; }
+.frame--sequence img { opacity: 0; user-select: none; -webkit-user-select: none; }
+.frame--sequence img.is-next { opacity: 1; z-index: 1; }
+.frame--sequence img.is-current { opacity: 1; z-index: 2; }
+.frame--sequence img.is-leaving {
+  opacity: 0;
+  transform: scale(var(--sequence-zoom));
+  transition:
+    transform var(--sequence-duration) cubic-bezier(0.4, 0, 0.2, 1),
+    opacity var(--sequence-duration) cubic-bezier(0.4, 0, 0.6, 1);
+}
+.frame--sequence img.is-entering {
+  z-index: 3;
+  animation: sequence-enter var(--sequence-duration) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes sequence-enter {
+  from { opacity: 0; transform: scale(var(--sequence-zoom)); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frame--sequence img.is-leaving { transform: none; }
+  @keyframes sequence-enter { from { opacity: 0; } to { opacity: 1; } }
+}
+
+.frame.is-missing::after {
+  content: attr(data-file);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--label-size);
+  color: #8a8a8a;
+}
+
+.block__label {
+  margin: 0 0 var(--label-caption-gap);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+}
+
+.block__caption { margin: 0; }
+
+.block__caption.is-empty { color: #b5b5b5; }
+
+/* type: 'title' — one screen, one huge word below the counter (arrival) */
+.block--title {
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  padding: var(--lead-height) var(--page-margin) var(--page-margin);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.title__word {
+  display: block;
+  font-weight: 700;
+  line-height: 0.76;            /* box close to the capital letters, so the word can fill the screen */
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+/* ---------- Rehearsal (?debug) ---------- */
+
+.debug-panel {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 20;
+  margin: 0;
+  padding: 8px 10px;
+  max-width: calc(100vw - 16px);
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+.debug-panel .warn { color: #ff8a80; }
+
+.debug .segment { box-shadow: inset 0 1px 0 #f00; }
+
+.debug .segment::before {
+  content: attr(data-debug);
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #f00;
+}
+
+.debug .spacer { background: rgba(255, 0, 0, 0.04); }

@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- Page skeleton: fixed countdown + empty track. Blocks are built from js/content.js by js/main.js. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Home to HGB</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="counter" aria-hidden="true"><span id="counter" class="counter__time">00:00</span></div>
+
+  <main id="track" class="track"></main>
+
+  <!-- Blocks shown after the counter has stopped at 00:00 (segment: 'after'). -->
+  <section id="after" class="after"></section>
+
+  <!-- Measures one stable viewport height (svh) so the mobile address bar does not change lengths. -->
+  <div id="vh-probe" class="vh-probe" aria-hidden="true"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
