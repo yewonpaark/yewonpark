@@ -58,8 +58,8 @@ window.CONTENT = [
   { segment: 'walk2', type: 'title', caption: "HGB", position: 1 },
 
   // after — after 00:00
-  { segment: 'after', type: 'single', images: ['image24.jpg'], label: "", caption: "" },
-  { segment: 'after', type: 'single', images: ['image25.jpg'], label: "", caption: "" },
-  { segment: 'after', type: 'single', images: ['image26.jpg'], label: "", caption: "" },
-  { segment: 'after', type: 'single', images: ['image27.jpg'], label: "", caption: "" }
+  { segment: 'after', type: 'single', images: ['image24.jpg'], hideLabel: true, hideText: true },
+  { segment: 'after', type: 'single', images: ['image25.jpg'], hideLabel: true, hideText: true },
+  { segment: 'after', type: 'single', images: ['image26.jpg'], hideLabel: true, hideText: true },
+  { segment: 'after', type: 'single', images: ['image27.jpg'], hideLabel: true, hideText: true }
 ];
