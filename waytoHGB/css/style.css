@@ -6,21 +6,21 @@
 
 @font-face {
   font-family: "ABC Areal";
-  src: url("../fonts/ABCAreal-Regular.woff2") format("woff2");
+  src: url("../../fonts/ABCAreal-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: block;
 }
 @font-face {
   font-family: "ABC Areal";
-  src: url("../fonts/ABCAreal-Medium.woff2") format("woff2");
+  src: url("../../fonts/ABCAreal-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: block;
 }
 @font-face {
   font-family: "ABC Areal";
-  src: url("../fonts/ABCAreal-Bold.woff2") format("woff2");
+  src: url("../../fonts/ABCAreal-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: block;

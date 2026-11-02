@@ -1,191 +1,83 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@font-face {
+    font-family: 'ABC Areal';
+    src: url('fonts/ABCAreal-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 body {
-    font-family: 'Arial Narrow', Arial, sans-serif;
-    background: #9c9c9c;
-    color: rgba(255, 255, 255, 0.55);
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.hub-layout {
     display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
     min-height: 100vh;
-    padding: 30px;
-    position: relative;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 8px clamp(20px, 5vw, 64px);
+    font-family: 'ABC Areal', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
+    font-synthesis: none;
+    background: #fff;
+    color: #000;
 }
 
-/* Left: Category navigation */
-.hub-nav {
-    flex-shrink: 0;
-    width: 280px;
-    padding-top: 10px;
+h1 {
+    margin: 1em 0;
+    font-size: 1em;
+    font-weight: normal;
 }
 
-.category-list {
+/* Sits at the bottom of the screen, or below the list once the list is taller */
+footer {
+    margin-top: auto;
+    padding: 1em 0;
+}
+
+a,
+summary {
+    text-decoration: underline;
+}
+
+a,
+details[open] > summary {
+    color: #00e;
+}
+
+a:visited {
+    color: #551a8b;
+}
+
+a:active,
+details > summary:active {
+    color: #e00;
+}
+
+/* Category tree: each level sits one <dd> indent in from its parent */
+ul {
+    margin: 0;
+    padding: 0 0 0 40px;
     list-style: none;
 }
 
-.cat-main {
-    font-size: 15px;
-    font-weight: normal;
-    margin-top: 2px;
-    cursor: default;
-    line-height: 1.6;
+ul.tree {
+    padding-left: 0;
 }
 
-.cat-sub {
-    font-size: 15px;
-    font-weight: normal;
-    padding-left: 30px;
+summary {
+    display: block;
+    width: fit-content;
     cursor: pointer;
-    line-height: 1.6;
-    transition: color 0.2s;
+    list-style: none;
 }
 
-.cat-sub:hover {
-    color: rgba(255, 255, 255, 0.85);
+summary::-webkit-details-marker {
+    display: none;
 }
 
-.cat-sub.active {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-/* Right: Content area */
-.hub-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding-left: 40px;
-    padding-top: 10px;
-}
-
-.hub-name {
-    font-size: 48px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1;
-    margin-bottom: 30px;
-}
-
-.hub-link-area {
-    margin-top: 120px;
-}
-
-.project-link {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.55);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
-}
-
-.project-link:hover {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.coming-soon {
-    font-size: 15px;
-    color: rgba(255, 255, 255, 0.35);
-    font-style: italic;
-}
-
-/* Bottom left: INFO */
-.hub-info {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-}
-
-.info-btn {
-    background: none;
-    border: none;
-    font-family: 'Arial Narrow', Arial, sans-serif;
-    font-size: 15px;
-    font-weight: bold;
-    color: rgba(255, 255, 255, 0.55);
-    cursor: pointer;
-    padding: 0;
-    text-transform: uppercase;
-    transition: color 0.2s;
-}
-
-.info-btn:hover {
-    color: rgba(255, 255, 255, 0.85);
-}
-
-.info-detail {
-    margin-top: 8px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s;
-}
-
-.info-detail.visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-.info-detail p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.45);
-}
-
-.info-detail a {
-    color: rgba(255, 255, 255, 0.45);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-}
-
-.info-detail a:hover {
-    color: rgba(255, 255, 255, 0.75);
-}
-
-/* ============================================================
-   Mobile Responsive
-   ============================================================ */
-@media (max-width: 768px) {
-    body {
-        overflow: auto;
-    }
-
-    .hub-layout {
-        flex-direction: column;
-        padding: 24px;
-    }
-
-    .hub-nav {
-        width: 100%;
-        order: 2;
-        margin-top: 30px;
-    }
-
-    .hub-content {
-        padding-left: 0;
-        order: 1;
-    }
-
-    .hub-name {
-        font-size: 32px;
-        margin-bottom: 20px;
-    }
-
-    .hub-link-area {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-
-    .hub-info {
-        position: relative;
-        bottom: auto;
-        left: auto;
-        order: 3;
-        margin-top: 40px;
+/* Keep rows comfortable to tap */
+@media (pointer: coarse) {
+    li {
+        padding: 4px 0;
     }
 }

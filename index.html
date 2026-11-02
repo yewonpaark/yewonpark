@@ -4,109 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yewon Park</title>
+    <link rel="preload" href="fonts/ABCAreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="hub-style.css">
 </head>
 <body>
-    <div class="hub-layout">
-        <!-- Left: Category list -->
-        <nav class="hub-nav">
-            <ul class="category-list">
-                <li class="cat-main">Graphic Design</li>
-                <li class="cat-sub" data-category="identity">Identity/Branding</li>
-                <li class="cat-sub" data-category="publication">Publication</li>
-                <li class="cat-sub" data-category="poster">Poster</li>
-                <li class="cat-sub" data-category="logo">Logo</li>
-                <li class="cat-sub" data-category="type">Type/Letterform</li>
+    <h1>Yewon Park</h1>
 
-                <li class="cat-main">Digital Interactive</li>
-                <li class="cat-sub active" data-category="websites" data-link="htmlcolorcodewalk/" data-label="htmlcolorcodewalk.com">Websites</li>
-                <li class="cat-sub" data-category="interactive">Interactive</li>
-                <li class="cat-sub" data-category="generative">Generative</li>
+    <ul class="tree">
+        <li>
+            <details>
+                <summary>Graphic Design</summary>
+                <ul>
+                    <li>Identity/Branding</li>
+                    <li>Publication</li>
+                    <li>Poster</li>
+                    <li>Logo</li>
+                    <li>Type/Letterform</li>
+                </ul>
+            </details>
+        </li>
+        <li>
+            <details open>
+                <summary>Digital Interactive</summary>
+                <ul>
+                    <li>
+                        <details open>
+                            <summary>Websites</summary>
+                            <ul>
+                                <li><a href="htmlcolorcodewalk/">htmlcolorcodewalk.com</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </details>
+        </li>
+        <li>
+            <details>
+                <summary>3D Design</summary>
+                <ul>
+                    <li>Character</li>
+                    <li>Environment</li>
+                    <li>Modeling</li>
+                    <li>Product/Prototype</li>
+                    <li>Merchandise</li>
+                </ul>
+            </details>
+        </li>
+        <li>
+            <details>
+                <summary>Image/ Film</summary>
+                <ul>
+                    <li>Photography</li>
+                    <li>Art Direction</li>
+                    <li>Film</li>
+                    <li>Motion Graphics</li>
+                </ul>
+            </details>
+        </li>
+        <li>
+            <details>
+                <summary>Spatial/ Fine Art</summary>
+                <ul>
+                    <li>Exhibition</li>
+                    <li>Sculpture</li>
+                    <li>Mixed Media</li>
+                </ul>
+            </details>
+        </li>
+    </ul>
 
-                <li class="cat-main">3D Design</li>
-                <li class="cat-sub" data-category="character">Character</li>
-                <li class="cat-sub" data-category="environment">Environment</li>
-                <li class="cat-sub" data-category="modeling">Modeling</li>
-                <li class="cat-sub" data-category="product">Product/Prototype</li>
-                <li class="cat-sub" data-category="merchandise">Merchandise</li>
-
-                <li class="cat-main">Image/ Film</li>
-                <li class="cat-sub" data-category="photography">Photography</li>
-                <li class="cat-sub" data-category="artdirection">Art Direction</li>
-                <li class="cat-sub" data-category="film">Film</li>
-                <li class="cat-sub" data-category="motion">Motion Graphics</li>
-
-                <li class="cat-main">Spatial/ Fine Art</li>
-                <li class="cat-sub" data-category="exhibition">Exhibition</li>
-                <li class="cat-sub" data-category="sculpture">Sculpture</li>
-                <li class="cat-sub" data-category="mixedmedia">Mixed Media</li>
-            </ul>
-        </nav>
-
-        <!-- Right: Name + content area -->
-        <div class="hub-content">
-            <h1 class="hub-name">Yewon Park</h1>
-            <div class="hub-link-area" id="hubLinkArea"></div>
-        </div>
-
-        <!-- Bottom left: INFO -->
-        <div class="hub-info" id="hubInfo">
-            <button class="info-btn" id="infoBtn">INFO</button>
-            <div class="info-detail" id="infoDetail">
-                <p>yewonpaark@gmail.com</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Category click interaction
-        const subs = document.querySelectorAll('.cat-sub');
-        const linkArea = document.getElementById('hubLinkArea');
-        let activeSub = null;
-
-        subs.forEach(sub => {
-            sub.addEventListener('click', () => {
-                // Toggle: if same item clicked again, deselect
-                if (activeSub === sub) {
-                    sub.classList.remove('active');
-                    linkArea.innerHTML = '';
-                    activeSub = null;
-                    return;
-                }
-
-                // Remove previous active
-                if (activeSub) activeSub.classList.remove('active');
-
-                // Set new active
-                sub.classList.add('active');
-                activeSub = sub;
-
-                const link = sub.dataset.link;
-                const label = sub.dataset.label;
-
-                if (link) {
-                    linkArea.innerHTML = `<a href="${link}" class="project-link">${label}</a>`;
-                } else {
-                    linkArea.innerHTML = `<span class="coming-soon">coming soon</span>`;
-                }
-            });
-        });
-
-        // Initialize: show Websites link by default
-        const defaultSub = document.querySelector('.cat-sub[data-category="websites"]');
-        if (defaultSub) {
-            activeSub = defaultSub;
-            const link = defaultSub.dataset.link;
-            const label = defaultSub.dataset.label;
-            linkArea.innerHTML = `<a href="${link}" class="project-link">${label}</a>`;
-        }
-
-        // INFO toggle
-        const infoBtn = document.getElementById('infoBtn');
-        const infoDetail = document.getElementById('infoDetail');
-        infoBtn.addEventListener('click', () => {
-            infoDetail.classList.toggle('visible');
-        });
-    </script>
+    <footer>
+        <a href="mailto:yewonpaark@gmail.com">yewonpaark@gmail.com</a>
+    </footer>
 </body>
 </html>
