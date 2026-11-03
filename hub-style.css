@@ -7,11 +7,6 @@
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    min-height: 100vh;
-    min-height: 100dvh;
     margin: 0;
     padding: 8px clamp(20px, 5vw, 64px);
     font-family: 'ABC Areal', Arial, sans-serif;
@@ -28,10 +23,17 @@ h1 {
     font-weight: normal;
 }
 
-/* Sits at the bottom of the screen, or below the list once the list is taller */
-footer {
-    margin-top: auto;
-    padding: 1em 0;
+/* Floated so the list wraps beside it instead of running underneath */
+.mail {
+    float: right;
+    margin: 1em 0 0 1em;
+}
+
+/* Change width to resize the snail; height follows */
+.mail-snail {
+    display: block;
+    width: 96px;
+    height: auto;
 }
 
 a,
